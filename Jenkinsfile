@@ -10,12 +10,17 @@ stages {
            sh 'cd webapp && npm install && npm run build'
       }
     }
-    stage('nexus') {
+    stage('Release LMS Frontend') {
         steps {
-           sh 'zip -r lms-v1.1.zip webapp/dist/*'
-           sh 'pwd'
-           sh 'curl -v -u admin:admin123 --upload-file lms-v1.1.zip http://44.203.125.161:8081/repository/lms/'
-      }
+            script {
+                echo "Releasing.."       
+                def packageJSON = readJSON file: 'webapp/package.json'
+                def packageJSONVersion = packageJSON.version
+                echo "${packageJSONVersion}"  
+                sh "zip webapp/dist-${packageJSONVersion}.zip -r webapp/dist"
+                sh "curl -v -u admin:admin123 --upload-file webapp/dist-${packageJSONVersion}.zip http://44.203.125.161:8081/repository/lms/"     
+        }
+        }
     }
   }
 }
