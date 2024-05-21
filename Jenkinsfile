@@ -7,9 +7,7 @@ label 'slave'
 stages {
     stage('build') {
         steps {
-           sh 'cd webapp'
-           sh 'npm install'
-           sh 'npm run build'
+           sh 'cd webapp && npm install && npm run build'
       }
     }
     stage('nexus') {
